@@ -6,7 +6,6 @@ import '../models/pig.dart' as pig;
 import '../services/chicken_service.dart';
 import '../services/fish_service.dart';
 import '../services/pig_service.dart';
-import '../models/food_consumption.dart';
 
 class EditGroupScreen extends StatefulWidget {
   final dynamic group;
@@ -26,23 +25,24 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
 
   late String _name;
   late int _totalCount;
-  late int _sacks;
-  late double _pricePerSack;
   late DateTime _birthDate;
   String _fishType = 'Kanga';  // Default fish type
+  String _pigType = 'petit';   // Default pig type
 
   @override
   void initState() {
     super.initState();
     _name = widget.livestockType == 'Poulets' ? widget.group.title : widget.group.name;
     _totalCount = widget.group.totalCount;
-    _sacks = widget.group.foodConsumption.sacks;
-    _pricePerSack = widget.group.foodConsumption.pricePerSack;
     _birthDate = widget.group.birthDate;
     if (widget.livestockType == 'Poissons') {
       _fishType = widget.group.type;
     }
+    if (widget.livestockType == 'Porcs') {
+      _pigType = widget.group.type;
+    }
   }
+
   Future<void> _updateGroup() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -53,7 +53,6 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
             id: widget.group.id,
             title: _name,
             totalCount: _totalCount,
-            foodConsumption: FoodConsumption(sacks: _sacks, pricePerSack: _pricePerSack),
             birthDate: _birthDate,
             createdAt: widget.group.createdAt,
             modifiedAt: DateTime.now(),
@@ -65,7 +64,6 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
             name: _name,
             totalCount: _totalCount,
             type: _fishType,
-            foodConsumption: FoodConsumption(sacks: _sacks, pricePerSack: _pricePerSack),
             birthDate: _birthDate,
             createdAt: widget.group.createdAt,
             modifiedAt: DateTime.now(),
@@ -76,8 +74,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
             id: widget.group.id,
             name: _name,
             totalCount: _totalCount,
-            type: '',  // Type will be determined on the backend
-            foodConsumption: FoodConsumption(sacks: _sacks, pricePerSack: _pricePerSack),
+            type: _pigType,
             birthDate: _birthDate,
             createdAt: widget.group.createdAt,
             modifiedAt: DateTime.now(),
@@ -98,6 +95,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
       }
     }
   }
+
   Future<void> _selectBirthDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -177,36 +175,17 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                     });
                   },
                 ),
-              SizedBox(height: 20),
-              _buildInputField(
-                initialValue: _sacks.toString(),
-                label: 'Sacs',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer le nombre de sacs';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _sacks = int.parse(value!);
-                },
-              ),
-              SizedBox(height: 20),
-              _buildInputField(
-                initialValue: _pricePerSack.toString(),
-                label: 'Prix par sac',
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Veuillez entrer le prix par sac';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _pricePerSack = double.parse(value!);
-                },
-              ),
+              if (widget.livestockType == 'Porcs')
+                // _buildDropdownField(
+                //   label: 'Type de porc',
+                //   value: _pigType,
+                //   items: ['petit', 'moyen', 'grand'],
+                //   onChanged: (String? newValue) {
+                //     setState(() {
+                //       _pigType = newValue!;
+                //     });
+                //   },
+                // ),
               SizedBox(height: 20),
               ListTile(
                 contentPadding: EdgeInsets.symmetric(horizontal: 0),

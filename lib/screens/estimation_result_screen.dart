@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class EstimationResultScreen extends StatelessWidget {
   final String livestockType;
@@ -74,6 +79,19 @@ class EstimationResultScreen extends StatelessWidget {
                   if (isSingleGroup) ..._buildSingleGroupTableRows(),
                   if (!isSingleGroup) ..._buildMultipleGroupsTableRows(),
                 ],
+              ),
+              SizedBox(height: 20),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () => _generatePdf(context),
+                  child: Text('Télécharger le rapport en PDF'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF285429),
+                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                    textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                    foregroundColor: Colors.white,
+                  ),
+                ),
               ),
             ],
           ),
@@ -155,6 +173,53 @@ class EstimationResultScreen extends StatelessWidget {
           child: Text(value),
         ),
       ],
+    );
+  }
+
+  Future<void> _generatePdf(BuildContext context) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Text(
+                'Estimation de Production pour $livestockType',
+                style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Text(
+                'Cette estimation est basée sur la période sélectionnée. Elle calcule les ventes totales, le coût de la consommation de nourriture et le profit généré.',
+                style: pw.TextStyle(fontSize: 16),
+              ),
+              pw.SizedBox(height: 20),
+              pw.Table.fromTextArray(
+                border: pw.TableBorder.all(),
+                headers: ['Description', 'Valeur'],
+                data: <List<String>>[
+                  for (var row in isSingleGroup ? _buildSingleGroupTableRows() : _buildMultipleGroupsTableRows())
+                    [
+                      (row.children![0] as Padding).child as String,
+                      (row.children![1] as Padding).child as String,
+                    ]
+                ],
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    final directory = await getExternalStorageDirectory();
+    final filePath = '${directory!.path}/estimation_${livestockType}_${DateTime.now().toIso8601String()}.pdf';
+    final file = File(filePath);
+
+    await file.writeAsBytes(await pdf.save());
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('PDF enregistré sous $filePath')),
     );
   }
 }

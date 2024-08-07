@@ -1,3 +1,4 @@
+// lib/screens/group_detail_screen.dart
 import 'package:flutter/material.dart';
 import '../models/chicken.dart';
 import '../models/fish.dart';
@@ -226,7 +227,6 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       },
     );
   }
-
   Future<void> _estimateProduction() async {
     final Map<String, dynamic> requestData = {
       'timeFrame': _timeFrame,
@@ -251,117 +251,116 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-      builder: (context) => EstimationResultScreen(
-        livestockType: widget.livestockType,
-        result: result,
-        isSingleGroup: true,
-      ),
-    ));
-  } catch (e) {
-    if (e.toString().contains('Fish group not yet ready for sale') ||
-        e.toString().contains('Pig group not yet ready for sale')) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Groupe de ${widget.livestockType} pas encore prêt à la vente')),
+          builder: (context) => EstimationResultScreen(
+            livestockType: widget.livestockType,
+            result: result,
+            isSingleGroup: true,
+          ),
+        ),
       );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Échec de l\'estimation de la production: $e')),
-      );
+    } catch (e) {
+      if (e.toString().contains('Fish group not yet ready for sale') ||
+          e.toString().contains('Pig group not yet ready for sale')) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Groupe de ${widget.livestockType} pas encore prêt à la vente')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Échec de l\'estimation de la production: $e')),
+        );
+      }
     }
   }
-}
 
-@override
-Widget build(BuildContext context) {
-  String groupName = '';
-  if (widget.livestockType == 'Poulets') {
-    groupName = widget.group.title;
-  } else if (widget.livestockType == 'Poissons' || widget.livestockType == 'Porcs') {
-    groupName = widget.group.name;
-  }
+  @override
+  Widget build(BuildContext context) {
+    String groupName = '';
+    if (widget.livestockType == 'Poulets') {
+      groupName = widget.group.title;
+    } else if (widget.livestockType == 'Poissons' || widget.livestockType == 'Porcs') {
+      groupName = widget.group.name;
+    }
 
-  return Scaffold(
-    appBar: AppBar(
-      title: Text(
-        'Détails du groupe de ${widget.livestockType}',
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Détails du groupe de ${widget.livestockType}',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
+        backgroundColor: Color(0xFF285429),
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
       ),
-      backgroundColor: Color(0xFF285429),
-      centerTitle: true,
-      iconTheme: IconThemeData(color: Colors.white),
-    ),
-    body: SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Center(
-            child: Text(
-              groupName,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF285429),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Center(
+              child: Text(
+                groupName,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF285429),
+                ),
               ),
             ),
-          ),
-          SizedBox(height: 20),
-          Divider(),
-          ListTile(
-            title: Text('Nombre total', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
-            subtitle: Text('${widget.group.totalCount}'),
-          ),
-          Divider(),
-          ListTile(
-            title: Text('Consommation de nourriture', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
-            subtitle: Text('${widget.group.foodConsumption.sacks} sacs par mois à ${widget.group.foodConsumption.pricePerSack} FCFA par sac'),
-          ),
-          Divider(),
-          ListTile(
-            title: Text('Date de naissance', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
-            subtitle: Text('${widget.group.birthDate.toLocal().toIso8601String().split('T')[0]}'),
-          ),
-          // if (widget.livestockType == 'Poulets') ...[
+            SizedBox(height: 20),
+            Divider(),
+            ListTile(
+              title: Text('Nombre total', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
+              subtitle: Text('${widget.group.totalCount}'),
+            ),
+            // Divider(),
+            // ListTile(
+            //   title: Text('Consommation de nourriture', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
+            //   subtitle: Text('${widget.group.foodConsumption.sacks} sacs par mois à ${widget.group.foodConsumption.pricePerSack} FCFA par sac'),
+            // ),
+            Divider(),
+            ListTile(
+              title: Text('Date de naissance', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
+              subtitle: Text('${widget.group.birthDate.toLocal().toIso8601String().split('T')[0]}'),
+            ),
             Divider(),
             ListTile(
               title: Text('Âge', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
               subtitle: Text(calculateAge(widget.group.birthDate)),
             ),
-          // ],
-          if (widget.livestockType == 'Porcs') ...[
-            Divider(),
-            ListTile(
-              title: Text('Type', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
-              subtitle: Text('${widget.group.type}'),
-            ),
-          ],
-          SizedBox(height: 20),
-          Center(
-            child: ElevatedButton(
-              onPressed: _isEligibleForEstimation ? () => _showEstimationModal(context) : null,
-              child: Text('Estimer la production'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF285429),
-                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                foregroundColor: Colors.white,
+            if (widget.livestockType == 'Porcs') ...[
+              Divider(),
+              ListTile(
+                title: Text('Type', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF285429))),
+                subtitle: Text('${widget.group.type}'),
               ),
-            ),
-          ),
-          if (!_isEligibleForEstimation)
+            ],
+            SizedBox(height: 20),
             Center(
-              child: Text(
-                'Les poulets doivent avoir au moins 6 mois pour être éligibles à la ponte.',
-                style: TextStyle(color: Colors.red, fontSize: 16),
+              child: ElevatedButton(
+                onPressed: _isEligibleForEstimation ? () => _showEstimationModal(context) : null,
+                child: Text('Estimer la production'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF285429),
+                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                  foregroundColor: Colors.white,
+                ),
               ),
             ),
-        ],
+            if (!_isEligibleForEstimation)
+              Center(
+                child: Text(
+                  'Les poulets doivent avoir au moins 6 mois pour être éligibles à la ponte.',
+                  style: TextStyle(color: Colors.red, fontSize: 16),
+                ),
+              ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

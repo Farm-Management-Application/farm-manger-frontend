@@ -1,11 +1,7 @@
-// lib/models/chicken.dart
-import 'food_consumption.dart';
-
 class Chicken {
   String id;
   String title;
   int totalCount;
-  FoodConsumption foodConsumption;
   DateTime birthDate;
   DateTime createdAt;
   DateTime modifiedAt;
@@ -14,7 +10,6 @@ class Chicken {
     required this.id,
     required this.title,
     required this.totalCount,
-    required this.foodConsumption,
     required this.birthDate,
     required this.createdAt,
     required this.modifiedAt,
@@ -25,7 +20,6 @@ class Chicken {
       id: json['_id'],
       title: json['title'],
       totalCount: json['totalCount'],
-      foodConsumption: FoodConsumption.fromJson(json['foodConsumption']),
       birthDate: DateTime.parse(json['birthDate']),
       createdAt: DateTime.parse(json['createdAt']),
       modifiedAt: DateTime.parse(json['modifiedAt']),
@@ -37,7 +31,6 @@ class Chicken {
       'id': id,
       'title': title,
       'totalCount': totalCount,
-      'foodConsumption': foodConsumption.toJson(),
       'birthDate': birthDate.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
       'modifiedAt': modifiedAt.toIso8601String(),
@@ -48,7 +41,6 @@ class Chicken {
     return {
       'title': title,
       'totalCount': totalCount,
-      'foodConsumption': foodConsumption.toJson(),
       'birthDate': birthDate.toIso8601String(),
     };
   }
