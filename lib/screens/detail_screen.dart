@@ -8,6 +8,7 @@ import '../models/fish.dart';
 import '../models/pig.dart';
 import 'estimation_result_screen.dart';
 import '../utils/utilFunctions.dart';
+import '../widgets/loading_widget.dart';
 
 class DetailScreen extends StatefulWidget {
   final String livestockType;
@@ -285,22 +286,26 @@ Widget build(BuildContext context) {
         future: _livestockGroupsFuture,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return LoadingWidget(
+              title: "Chargement des données",
+              subtitle: "Veuillez patienter pendant que nous récupérons les détails du bétail",
+            );
           } else if (snapshot.hasError) {
             return Center(
               child: Text(
                 'Erreur lors de la récupération des données: ${snapshot.error}',
                 style: TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
               ),
             );
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return Center(
               child: Text(
                 'Aucune donnée disponible',
-                style: TextStyle(color: Color(0xFF285429)),
+                style: TextStyle(fontSize: 24, color: Color(0xFF285429)),
               ),
             );
-          } else {
+          }else {
             final livestockGroups = snapshot.data!;
             return Column(
               children: [
