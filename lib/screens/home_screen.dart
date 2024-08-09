@@ -1,8 +1,10 @@
+// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import '../services/chicken_service.dart';
 import '../services/fish_service.dart';
 import '../services/pig_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../widgets/loading_widget.dart';  // Import the loading widget
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int totalChickens = 0;
   int totalFish = 0;
   int totalPigs = 0;
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -34,10 +37,14 @@ class _HomeScreenState extends State<HomeScreen> {
         totalChickens = chickens;
         totalFish = fish;
         totalPigs = pigs;
+        isLoading = false;
       });
     } catch (e) {
       // Handle error
       print('Error fetching data: $e');
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -56,28 +63,30 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Color(0xFF285429),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Total du Bétail',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFFFAA625),
+      body: isLoading
+          ? LoadingWidget(title: "Récupération des données", subtitle: "veuillez patienter !")  // Use the loading widget here
+          : Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Total du Bétail',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFFAA625),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  _buildStatisticCard('Poulets', totalChickens, '/detail', 'Poulets', Icons.egg),
+                  SizedBox(height: 20),
+                  _buildStatisticCard('Poissons', totalFish, '/detail', 'Poissons', FontAwesomeIcons.fish),
+                  SizedBox(height: 20),
+                  _buildStatisticCard('Porcs', totalPigs, '/detail', 'Porcs', FontAwesomeIcons.piggyBank),
+                ],
               ),
             ),
-            SizedBox(height: 20),
-            _buildStatisticCard('Poulets', totalChickens, '/detail', 'Poulets', Icons.egg),
-            SizedBox(height: 20),
-            _buildStatisticCard('Poissons', totalFish, '/detail', 'Poissons', FontAwesomeIcons.fish),
-            SizedBox(height: 20),
-            _buildStatisticCard('Porcs', totalPigs, '/detail', 'Porcs', FontAwesomeIcons.piggyBank),
-          ],
-        ),
-      ),
     );
   }
 
