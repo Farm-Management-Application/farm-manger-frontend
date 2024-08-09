@@ -11,15 +11,18 @@ class LoadingWidget extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center, // Ensure the text is centered
         children: [
           Text(
             title,
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            textAlign: TextAlign.center, // Center align the title text
           ),
           SizedBox(height: 8),
           Text(
             subtitle,
             style: TextStyle(fontSize: 18, color: Colors.grey),
+            textAlign: TextAlign.center, // Center align the subtitle text
           ),
           SizedBox(height: 24),
           CircularProgressIndicator(
