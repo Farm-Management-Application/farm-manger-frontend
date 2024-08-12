@@ -8,6 +8,7 @@ import '../services/fish_service.dart';
 import '../services/pig_service.dart';
 import 'estimation_result_screen.dart';
 import '../utils/utilFunctions.dart';
+import '../widgets/loading_widget.dart';
 
 class GroupDetailScreen extends StatefulWidget {
   final dynamic group;
@@ -227,7 +228,75 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       },
     );
   }
+  // Future<void> _estimateProduction() async {
+  //   final Map<String, dynamic> requestData = {
+  //     'timeFrame': _timeFrame,
+  //     'value': _value,
+  //   };
+
+  //   if (_timeFrame == 'custom' && _startDate != null && _endDate != null) {
+  //     requestData['startDate'] = _startDate!.toIso8601String();
+  //     requestData['endDate'] = _endDate!.toIso8601String();
+  //   }
+
+  //   dynamic result;
+  //   try {
+  //     if (widget.livestockType == 'Poulets') {
+  //       result = await _chickenService.estimateEggProductionForGroup(widget.group.id, requestData);
+  //     } else if (widget.livestockType == 'Poissons') {
+  //       result = await _fishService.estimatePriceForGroup(widget.group.id);
+  //     } else if (widget.livestockType == 'Porcs') {
+  //       result = await _pigService.estimatePriceForGroup(widget.group.id);
+  //     }
+
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => EstimationResultScreen(
+  //           livestockType: widget.livestockType,
+  //           result: result,
+  //           isSingleGroup: true,
+  //         ),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     if (e.toString().contains('Fish group not yet ready for sale') ||
+  //         e.toString().contains('Pig group not yet ready for sale')) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Groupe de ${widget.livestockType} pas encore prêt à la vente')),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Échec de l\'estimation de la production: $e')),
+  //       );
+  //     }
+  //   }
+  // }
+
   Future<void> _estimateProduction() async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent, // Transparent background
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8, // Adjust the width as needed
+            height: MediaQuery.of(context).size.height * 0.3, // Adjust the height to your preference
+            padding: EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              color: Colors.white, // Background color
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: LoadingWidget(
+              title: "Estimation de la production",
+              subtitle: "Veuillez patienter pendant que nous estimons la production...",
+            ),
+          ),
+        );
+      },
+    );
+
     final Map<String, dynamic> requestData = {
       'timeFrame': _timeFrame,
       'value': _value,
@@ -248,6 +317,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         result = await _pigService.estimatePriceForGroup(widget.group.id);
       }
 
+      Navigator.pop(context); // Close the loading dialog
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -259,6 +330,8 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         ),
       );
     } catch (e) {
+      Navigator.pop(context); // Close the loading dialog
+
       if (e.toString().contains('Fish group not yet ready for sale') ||
           e.toString().contains('Pig group not yet ready for sale')) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -271,6 +344,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

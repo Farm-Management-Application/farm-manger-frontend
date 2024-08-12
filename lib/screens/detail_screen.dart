@@ -217,6 +217,51 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
+  // Future<void> _estimateProductionForAll() async {
+  //   final Map<String, dynamic> requestData = {
+  //     'timeFrame': _timeFrame,
+  //     'value': _value,
+  //   };
+
+  //   if (_timeFrame == 'custom' && _startDate != null && _endDate != null) {
+  //     requestData['startDate'] = _startDate!.toIso8601String();
+  //     requestData['endDate'] = _endDate!.toIso8601String();
+  //   }
+
+  //   dynamic result;
+  //   try {
+  //     if (widget.livestockType == 'Poulets') {
+  //       result = await _chickenService.estimateEggProductionForAll(requestData);
+  //     } else if (widget.livestockType == 'Poissons') {
+  //       result = await _fishService.estimatePriceForAll();
+  //     } else if (widget.livestockType == 'Porcs') {
+  //       result = await _pigService.estimatePriceForAll();
+  //     }
+
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => EstimationResultScreen(
+  //           livestockType: widget.livestockType,
+  //           result: result,
+  //           isSingleGroup: false,
+  //         ),
+  //       ),
+  //     );
+  //   } catch (e) {
+  //     if (e.toString().contains('Fish group not yet ready for sale') ||
+  //         e.toString().contains('Pig group not yet ready for sale')) {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Le groupe de ${widget.livestockType} n\'est pas encore prêt à être vendu')),
+  //       );
+  //     } else {
+  //       ScaffoldMessenger.of(context).showSnackBar(
+  //         SnackBar(content: Text('Échec de l\'estimation de la production pour tous les groupes: $e')),
+  //       );
+  //     }
+  //   }
+  // }
+
   Future<void> _estimateProductionForAll() async {
     final Map<String, dynamic> requestData = {
       'timeFrame': _timeFrame,
@@ -230,6 +275,31 @@ class _DetailScreenState extends State<DetailScreen> {
 
     dynamic result;
     try {
+      // Show loading dialog
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent, // Transparent background
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8, // Adjust the width as needed
+              height: MediaQuery.of(context).size.height * 0.3, // Adjust the height to your preference
+              padding: EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white, // Background color
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: LoadingWidget(
+                title: "Estimation de la production",
+                subtitle: "Veuillez patienter pendant que nous estimons la production...",
+              ),
+            ),
+          );
+        },
+      );
+
+      // Fetch the estimation
       if (widget.livestockType == 'Poulets') {
         result = await _chickenService.estimateEggProductionForAll(requestData);
       } else if (widget.livestockType == 'Poissons') {
@@ -238,6 +308,10 @@ class _DetailScreenState extends State<DetailScreen> {
         result = await _pigService.estimatePriceForAll();
       }
 
+      // Dismiss the loading dialog
+      Navigator.pop(context);
+
+      // Navigate to the result screen
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -249,6 +323,9 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
       );
     } catch (e) {
+      // Dismiss the loading dialog in case of an error
+      Navigator.pop(context);
+
       if (e.toString().contains('Fish group not yet ready for sale') ||
           e.toString().contains('Pig group not yet ready for sale')) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -261,6 +338,7 @@ class _DetailScreenState extends State<DetailScreen> {
       }
     }
   }
+
 
 @override
 Widget build(BuildContext context) {

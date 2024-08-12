@@ -6,6 +6,7 @@ import '../models/pig.dart' as pig;
 import '../services/chicken_service.dart';
 import '../services/fish_service.dart';
 import '../services/pig_service.dart';
+import '../widgets/loading_widget.dart';
 
 class EditGroupScreen extends StatefulWidget {
   final dynamic group;
@@ -47,6 +48,37 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            backgroundColor: Colors.transparent,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              height: MediaQuery.of(context).size.height * 0.3,
+              padding: EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text("Modification en cours", style: TextStyle(fontSize: 18)),
+                    SizedBox(height: 8),
+                    Text("Veuillez patienter...", style: TextStyle(fontSize: 16, color: Colors.grey)),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      );
+
       try {
         if (widget.livestockType == 'Poulets') {
           chicken.Chicken updatedGroup = chicken.Chicken(
@@ -86,7 +118,9 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
           SnackBar(content: Text('Groupe mis à jour avec succès')),
         );
 
-        Navigator.pop(context, true);
+        Navigator.pop(context); // Closes the loading dialog
+        Navigator.pop(context, true); // Navigates back to the previous screen
+
       } catch (e) {
         print('Erreur lors de la mise à jour du groupe: $e');
         ScaffoldMessenger.of(context).showSnackBar(
