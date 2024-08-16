@@ -1,7 +1,7 @@
 // lib/api/api_endpoints.dart
 class ApiEndpoints {
-  // static const String baseUrl = 'http://192.168.43.68:3000/api/farm';
-  static const String baseUrl = 'https://farm-manager-backend.onrender.com/api/farm';
+  static const String baseUrl = 'http://192.168.43.68:3000/api/farm';
+  // static const String baseUrl = 'https://farm-manager-backend.onrender.com/api/farm';
 
   // Chickens
   static String createChickenGroup = '$baseUrl/chickens';
@@ -29,4 +29,12 @@ class ApiEndpoints {
   static String getTotalPigCount = '$baseUrl/pigs/total';
   static String estimatePriceForPigGroup(String id) => '$baseUrl/pigs/$id/estimate-price';
   static String estimatePriceForAllPigGroups = '$baseUrl/pigs/estimate-price';
+
+  // Workers
+  static String createWorker = '$baseUrl/workers';
+  static String updateWorker(String id) => '$baseUrl/workers/$id';
+  static String getAllWorkers = '$baseUrl/workers';
+  static String getWorkerById(String id) => '$baseUrl/workers/$id';
+  static String deactivateWorker(String id) => '$baseUrl/workers/deactivate/$id';
+  static String ativateWorker(String id) => '$baseUrl/workers/activate/$id';
 }

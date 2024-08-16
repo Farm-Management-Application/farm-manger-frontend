@@ -4,6 +4,11 @@ import 'screens/detail_screen.dart';
 import 'screens/group_detail_screen.dart';
 import 'screens/create_group_screen.dart';
 import 'screens/edit_group_screen.dart';
+import 'screens/workers/worker_list_screen.dart';
+import 'screens/workers/worker_detail_screen.dart';
+import 'screens/workers/add_worker_screen.dart';
+import 'screens/workers/edit_worker_screen.dart';
+// import 'screens/workers/delete_worker_confirmation.dart';
 
 void main() {
   runApp(MyApp());
@@ -34,6 +39,11 @@ class MyApp extends StatelessWidget {
           group: (ModalRoute.of(context)!.settings.arguments as Map)['group'],
           livestockType: (ModalRoute.of(context)!.settings.arguments as Map)['livestockType'],
         ),
+        '/workerList': (context) => WorkerListScreen(),
+        '/workerDetail': (context) => WorkerDetailScreen(),
+        '/addWorker': (context) => AddWorkerScreen(),
+        '/editWorker': (context) => EditWorkerScreen(),
+        // '/deleteWorker': (context) => DeleteWorkerConfirmation(),
       },
     );
   }

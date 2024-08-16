@@ -1,10 +1,9 @@
-// lib/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import '../services/chicken_service.dart';
 import '../services/fish_service.dart';
 import '../services/pig_service.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../widgets/loading_widget.dart';  // Import the loading widget
+import '../widgets/loading_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -40,7 +39,6 @@ class _HomeScreenState extends State<HomeScreen> {
         isLoading = false;
       });
     } catch (e) {
-      // Handle error
       print('Error fetching data: $e');
       setState(() {
         isLoading = false;
@@ -62,9 +60,53 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         backgroundColor: Color(0xFF285429),
         centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.white),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xFF285429),
+              ),
+              child: Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.group),
+              title: Text('Workers'),
+              onTap: () {
+                Navigator.pushNamed(context, '/workerList');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.healing),
+              title: Text('Illnesses'),
+              onTap: () {
+                Navigator.pushNamed(context, '/illnesses');
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.analytics),
+              title: Text('Estimation & Analytics'),
+              onTap: () {
+                Navigator.pushNamed(context, '/estimations');
+              },
+            ),
+          ],
+        ),
       ),
       body: isLoading
-          ? LoadingWidget(title: "Récupération des données", subtitle: "veuillez patienter !")  // Use the loading widget here
+          ? LoadingWidget(
+              title: "Récupération des données",
+              subtitle: "Veuillez patienter !",
+            )
           : Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
