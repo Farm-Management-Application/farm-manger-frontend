@@ -1,6 +1,6 @@
 class Chicken {
   String id;
-  String title;
+  String name;
   int totalCount;
   DateTime birthDate;
   DateTime createdAt;
@@ -8,7 +8,7 @@ class Chicken {
 
   Chicken({
     required this.id,
-    required this.title,
+    required this.name,
     required this.totalCount,
     required this.birthDate,
     required this.createdAt,
@@ -18,7 +18,7 @@ class Chicken {
   factory Chicken.fromJson(Map<String, dynamic> json) {
     return Chicken(
       id: json['_id'],
-      title: json['title'],
+      name: json['name'],
       totalCount: json['totalCount'],
       birthDate: DateTime.parse(json['birthDate']),
       createdAt: DateTime.parse(json['createdAt']),
@@ -29,7 +29,7 @@ class Chicken {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'title': title,
+      'name': name,
       'totalCount': totalCount,
       'birthDate': birthDate.toIso8601String(),
       'createdAt': createdAt.toIso8601String(),
@@ -39,7 +39,7 @@ class Chicken {
 
   Map<String, dynamic> toUpdateJson() {
     return {
-      'title': title,
+      'name': name,
       'totalCount': totalCount,
       'birthDate': birthDate.toIso8601String(),
     };

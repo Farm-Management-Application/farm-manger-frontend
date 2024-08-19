@@ -33,7 +33,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
   @override
   void initState() {
     super.initState();
-    _name = widget.livestockType == 'Poulets' ? widget.group.title : widget.group.name;
+    _name = widget.group.name;
     _totalCount = widget.group.totalCount;
     _birthDate = widget.group.birthDate;
     if (widget.livestockType == 'Poissons') {
@@ -83,7 +83,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
         if (widget.livestockType == 'Poulets') {
           chicken.Chicken updatedGroup = chicken.Chicken(
             id: widget.group.id,
-            title: _name,
+            name: _name,
             totalCount: _totalCount,
             birthDate: _birthDate,
             createdAt: widget.group.createdAt,

@@ -392,9 +392,7 @@ Widget build(BuildContext context) {
                     itemCount: livestockGroups.length,
                     itemBuilder: (context, index) {
                       var group = livestockGroups[index];
-                      String groupName = widget.livestockType == 'Poulets'
-                          ? group.title
-                          : group.name;
+                      String groupName = group.name;
                       return Card(
                         margin: EdgeInsets.all(10.0),
                         shape: RoundedRectangleBorder(

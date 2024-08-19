@@ -348,12 +348,12 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String groupName = '';
-    if (widget.livestockType == 'Poulets') {
-      groupName = widget.group.title;
-    } else if (widget.livestockType == 'Poissons' || widget.livestockType == 'Porcs') {
-      groupName = widget.group.name;
-    }
+    String groupName = widget.group.name;
+    // if (widget.livestockType == 'Poulets') {
+    //   groupName = widget.group.title;
+    // } else if (widget.livestockType == 'Poissons' || widget.livestockType == 'Porcs') {
+    //   groupName = widget.group.name;
+    // }
 
     return Scaffold(
       appBar: AppBar(

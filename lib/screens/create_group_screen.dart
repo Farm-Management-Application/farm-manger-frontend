@@ -123,7 +123,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         if (widget.livestockType == 'Poulets') {
           chicken.Chicken newGroup = chicken.Chicken(
             id: '',
-            title: _name,
+            name: _name,
             totalCount: _totalCount,
             birthDate: _birthDate,
             createdAt: DateTime.now(),
