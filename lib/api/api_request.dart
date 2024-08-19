@@ -7,8 +7,6 @@ Future<http.Response?> apiRequest(String endUrl, String method, {dynamic body, b
   final uri = Uri.parse(endUrl);
   final jsonBody = body != null ? jsonEncode(body) : null;
 
-  print(uri);
-
   try {
     switch (method.toUpperCase()) {
       case 'GET':
