@@ -1,4 +1,3 @@
-// lib/api/api_endpoints.dart
 class ApiEndpoints {
   static const String baseUrl = 'http://192.168.43.68:3000/api/farm';
   // static const String baseUrl = 'https://farm-manager-backend.onrender.com/api/farm';
@@ -36,5 +35,12 @@ class ApiEndpoints {
   static String getAllWorkers = '$baseUrl/workers';
   static String getWorkerById(String id) => '$baseUrl/workers/$id';
   static String deactivateWorker(String id) => '$baseUrl/workers/deactivate/$id';
-  static String ativateWorker(String id) => '$baseUrl/workers/activate/$id';
+  static String activateWorker(String id) => '$baseUrl/workers/activate/$id';
+
+  // Illnesses
+  static String createIllness = '$baseUrl/illness/';
+  static String updateIllness(String id) => '$baseUrl/illness/$id';
+  static String getAllIllnesses = '$baseUrl/illness';
+  static String getIllnessById(String id) => '$baseUrl/illness/$id';
+  static String deleteIllness(String id) => '$baseUrl/illness/$id';
 }

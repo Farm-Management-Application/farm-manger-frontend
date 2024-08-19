@@ -8,7 +8,11 @@ import 'screens/workers/worker_list_screen.dart';
 import 'screens/workers/worker_detail_screen.dart';
 import 'screens/workers/add_worker_screen.dart';
 import 'screens/workers/edit_worker_screen.dart';
-// import 'screens/workers/delete_worker_confirmation.dart';
+import 'screens/illness/illness_list_screen.dart';
+import 'screens/illness/add_illness_screen.dart';
+import 'screens/illness/edit_illness_screen.dart';
+import 'screens/illness/illness_detail_screen.dart';
+import 'models/illness.dart';
 
 void main() {
   runApp(MyApp());
@@ -43,7 +47,16 @@ class MyApp extends StatelessWidget {
         '/workerDetail': (context) => WorkerDetailScreen(),
         '/addWorker': (context) => AddWorkerScreen(),
         '/editWorker': (context) => EditWorkerScreen(),
-        // '/deleteWorker': (context) => DeleteWorkerConfirmation(),
+        '/illnessList': (context) => IllnessListScreen(),
+        '/addIllness': (context) => AddIllnessScreen(),
+        '/editIllness': (context) {
+          final illness = ModalRoute.of(context)!.settings.arguments as Illness;
+          return EditIllnessScreen(illness: illness);
+        },
+        '/illnessDetail': (context) {
+          final illness = ModalRoute.of(context)!.settings.arguments as Illness;
+          return IllnessDetailScreen(illness: illness);
+        },
       },
     );
   }

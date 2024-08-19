@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
               leading: Icon(Icons.healing),
               title: Text('Illnesses'),
               onTap: () {
-                Navigator.pushNamed(context, '/illnesses');
+                Navigator.pushNamed(context, '/illnessList');
               },
             ),
             ListTile(

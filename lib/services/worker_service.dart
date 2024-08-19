@@ -54,7 +54,7 @@ class WorkerService {
   }
 
   Future<void> activateWorker(String id) async {
-    final response = await apiRequest(ApiEndpoints.ativateWorker(id), 'PUT');
+    final response = await apiRequest(ApiEndpoints.activateWorker(id), 'PUT');
 
     if (response == null || response.statusCode != 200) {
       throw Exception('Failed to ativate worker');
