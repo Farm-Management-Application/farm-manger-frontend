@@ -76,7 +76,7 @@ class _DetailScreenState extends State<DetailScreen> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: _startDate ?? DateTime.now(),
-      firstDate: _startDate ?? DateTime.now(),
+      firstDate: _startDate!,
       lastDate: DateTime(2100),
     );
     if (picked != null && picked != _endDate) {

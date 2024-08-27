@@ -103,19 +103,23 @@ class EstimationResultScreen extends StatelessWidget {
   List<TableRow> _buildSingleGroupTableRows() {
     if (livestockType == 'Poulets') {
       return [
-        _buildTableRow('Âge du groupe', '${result['eggProduction']['chickenAge']} mois'),
-        _buildTableRow('Production d\'œufs', '${result['eggProduction']['eggProduction']}'),
-        _buildTableRow('Ventes Totales', '${result['eggProduction']['totalSales']} FCFA'),
-        _buildTableRow('Total d\'alvéole d\'œufs', '${result['eggProduction']['trays']}'),
-        _buildTableRow('Coût Total de la Consommation de Nourriture', '${result['eggProduction']['totalConsumption']} FCFA'),
-        _buildTableRow('Profit', '${result['eggProduction']['profit']} FCFA'),
-        _buildTableRow('Durée', '${result['eggProduction']['duration']}'),
+        _buildTableRow('Âge du groupe', '${result['chickenAge']}'),
+        _buildTableRow('Production d\'œufs', '${result['eggProduction']} œufs'),
+        _buildTableRow('Ventes Totales', '${result['totalSales']} FCFA'),
+        _buildTableRow('Total d\'alvéole d\'œufs', '${result['trays']} alvéole(s)'),
+        _buildTableRow('Coût Total de la Consommation de Nourriture', '${result['totalConsumption']} FCFA'),
+        _buildTableRow('Coût des Maladies', '${result['illnessCost']} FCFA'),
+        _buildTableRow('Coût des Salaires des Travailleurs', '${result['workerSalaryCost']} FCFA'),
+        _buildTableRow('Profit', '${result['profit']} FCFA'),
+        _buildTableRow('Durée', '${result['duration']}'),
       ];
     } else if (livestockType == 'Poissons') {
       return [
         _buildTableRow('Âge du groupe', '${result['fishAge']} mois'),
         _buildTableRow('Prix Total', '${result['totalPrice']} FCFA'),
         _buildTableRow('Consommation Totale', '${result['foodConsumptionTotal']} sacs'),
+        _buildTableRow('Coût des Maladies', '${result['illnessCost']} FCFA'),
+        _buildTableRow('Coût des Salaires des Travailleurs', '${result['workerSalaryCost']} FCFA'),
         _buildTableRow('Profit', '${result['profit']} FCFA'),
       ];
     } else if (livestockType == 'Porcs') {
@@ -123,6 +127,8 @@ class EstimationResultScreen extends StatelessWidget {
         _buildTableRow('Âge du groupe', '${result['pigAge']}'),
         _buildTableRow('Prix Total', '${result['totalPrice']} FCFA'),
         _buildTableRow('Consommation Totale', '${result['foodConsumptionTotal']} sacs'),
+        _buildTableRow('Coût des Maladies', '${result['illnessCost']} FCFA'),
+        _buildTableRow('Coût des Salaires des Travailleurs', '${result['workerSalaryCost']} FCFA'),
         _buildTableRow('Profit', '${result['profit']} FCFA'),
       ];
     }
@@ -136,6 +142,8 @@ class EstimationResultScreen extends StatelessWidget {
         _buildTableRow('Ventes Totales', '${result['totalSales']} FCFA'),
         _buildTableRow('Total d\'alvéole d\'œufs', '${result['totalEggTrays']}'),
         _buildTableRow('Coût Total de la Consommation de Nourriture', '${result['totalFoodConsumptionCost']} FCFA'),
+        _buildTableRow('Coût des Maladies', '${result['illnessCost']} FCFA'),
+        _buildTableRow('Coût des Salaires des Travailleurs', '${result['workerSalaryCost']} FCFA'),
         _buildTableRow('Profit', '${result['profit']} FCFA'),
         _buildTableRow('Durée', '${result['duration']}'),
       ];
@@ -144,18 +152,22 @@ class EstimationResultScreen extends StatelessWidget {
         _buildTableRow('Total Poissons éligibles', '${result['totalEligibleFish']} poissons'),
         _buildTableRow('Prix Total', '${result['totalPrice']} FCFA'),
         _buildTableRow('Consommation Totale', '${result['totalFoodConsumptionCost']} sacs'),
+        _buildTableRow('Coût des Maladies', '${result['illnessCost']} FCFA'),
+        _buildTableRow('Coût des Salaires des Travailleurs', '${result['workerSalaryCost']} FCFA'),
         _buildTableRow('Profit', '${result['profit']} FCFA'),
         _buildTableRow('Date de début', '${result['oldestGroupCreationDate']}'),
-        _buildTableRow('Durée', '${result['weeksInAge']} semaines'),
+        _buildTableRow('Durée', '${result['weeksInAge']}'),
       ];
     } else if (livestockType == 'Porcs') {
       return [
         _buildTableRow('Total Porcs éligibles', '${result['totalEligiblePigCount']} porcs'),
         _buildTableRow('Prix Total', '${result['totalPrice']} FCFA'),
         _buildTableRow('Consommation Totale', '${result['totalFoodConsumption']} sacs'),
+        _buildTableRow('Coût des Maladies', '${result['illnessCost']} FCFA'),
+        _buildTableRow('Coût des Salaires des Travailleurs', '${result['workerSalaryCost']} FCFA'),
         _buildTableRow('Profit', '${result['totalProfit']} FCFA'),
         _buildTableRow('Date de début', '${result['oldestGroupCreationDate']}'),
-        _buildTableRow('Durée', '${result['weeksInAge']} semaines'),
+        _buildTableRow('Durée', '${result['weeksInAge']}'),
       ];
     }
     return [];

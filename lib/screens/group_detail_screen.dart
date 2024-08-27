@@ -42,13 +42,17 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
   Future<void> _selectStartDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: _startDate ?? DateTime.now(),
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
     );
     if (picked != null && picked != _startDate) {
       setState(() {
         _startDate = picked;
+        // If the end date is before the start date, reset the end date
+        if (_endDate != null && _endDate!.isBefore(_startDate!)) {
+          _endDate = null;
+        }
       });
     }
   }
@@ -56,87 +60,105 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
   Future<void> _selectEndDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
+      initialDate: _endDate ?? _startDate!.add(Duration(days: 1)),
+      firstDate: _startDate!,
+      lastDate: DateTime(2100),
     );
     if (picked != null && picked != _endDate) {
       setState(() {
         _endDate = picked;
       });
     }
-  }
+}
 
-  void _showEstimationModal(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Center(
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: Material(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: StatefulBuilder(
-                  builder: (BuildContext context, StateSetter setState) {
-                    return SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Estimation de la production',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF285429),
+void _showEstimationModal(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Center(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.8,
+          child: Material(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Estimation de la production',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF285429),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          widget.livestockType == 'Poulets'
+                              ? 'Cela calcule la production d\'œufs pour le groupe et la période sélectionnée (pour une période donnée), en s\'assurant que les poulets sont en âge de pondre des œufs. Il estime le prix total de tous les plateaux d\'œufs produits et le profit après déduction des coûts de consommation des sacs.'
+                              : widget.livestockType == 'Poissons'
+                                  ? 'Cela calcule le revenu total de la vente des poissons qui sont en âge d\'être vendus pour le groupe sélectionné.'
+                                  : 'Cela calcule le revenu total de la vente des porcs qui sont en âge d\'être vendus pour le groupe sélectionné.',
+                          style: TextStyle(fontSize: 16, color: Colors.black),
+                        ),
+                        SizedBox(height: 20),
+                        if (widget.livestockType == 'Poulets') ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: DropdownButtonFormField<String>(
+                              value: _timeFrame,
+                              onChanged: (String? newValue) {
+                                setState(() {
+                                  _timeFrame = newValue!;
+                                  _showCustomDatePickers = _timeFrame == 'custom';
+                                });
+                              },
+                              items: <String>['month', 'week', 'custom'].map<DropdownMenuItem<String>>((String value) {
+                                String displayValue;
+                                switch (value) {
+                                  case 'month':
+                                    displayValue = 'mois';
+                                    break;
+                                  case 'week':
+                                    displayValue = 'semaine';
+                                    break;
+                                  case 'custom':
+                                    displayValue = 'personnalisé';
+                                    break;
+                                  default:
+                                    displayValue = value;
+                                }
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(displayValue),
+                                );
+                              }).toList(),
+                              decoration: InputDecoration(
+                                labelText: 'Période',
+                                labelStyle: TextStyle(color: Color(0xFF285429)),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Color(0xFF285429)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Color(0xFF285429)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
                             ),
                           ),
-                          SizedBox(height: 10),
-                          Text(
-                            widget.livestockType == 'Poulets'
-                                ? 'Cela calcule la production d\'œufs pour le groupe et la période sélectionnée (pour une période donnée), en s\'assurant que les poulets sont en âge de pondre des œufs. Il estime le prix total de tous les plateaux d\'œufs produits et le profit après déduction des coûts de consommation des sacs.'
-                                : widget.livestockType == 'Poissons'
-                                    ? 'Cela calcule le revenu total de la vente des poissons qui sont en âge d\'être vendus pour le groupe sélectionné.'
-                                    : 'Cela calcule le revenu total de la vente des porcs qui sont en âge d\'être vendus pour le groupe sélectionné.',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                          SizedBox(height: 20),
-                          if (widget.livestockType == 'Poulets') ...[
+                          if (!_showCustomDatePickers)
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10.0),
-                              child: DropdownButtonFormField<String>(
-                                value: _timeFrame,
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    _timeFrame = newValue!;
-                                    _showCustomDatePickers = _timeFrame == 'custom';
-                                  });
-                                },
-                                items: <String>['month', 'week', 'custom'].map<DropdownMenuItem<String>>((String value) {
-                                  String displayValue;
-                                  switch (value) {
-                                    case 'month':
-                                      displayValue = 'mois';
-                                      break;
-                                    case 'week':
-                                      displayValue = 'semaine';
-                                      break;
-                                    case 'custom':
-                                      displayValue = 'personnalisé';
-                                      break;
-                                    default:
-                                      displayValue = value;
-                                  }
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(displayValue),
-                                  );
-                                }).toList(),
+                              child: TextFormField(
                                 decoration: InputDecoration(
-                                  labelText: 'Période',
+                                  labelText: 'Valeur',
                                   labelStyle: TextStyle(color: Color(0xFF285429)),
                                   focusedBorder: OutlineInputBorder(
                                     borderSide: BorderSide(color: Color(0xFF285429)),
@@ -147,87 +169,69 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                 ),
+                                keyboardType: TextInputType.number,
+                                initialValue: _value.toString(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _value = int.parse(value);
+                                  });
+                                },
                               ),
                             ),
-                            if (!_showCustomDatePickers)
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    labelText: 'Valeur',
-                                    labelStyle: TextStyle(color: Color(0xFF285429)),
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF285429)),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(color: Color(0xFF285429)),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                  ),
-                                  keyboardType: TextInputType.number,
-                                  initialValue: _value.toString(),
-                                  onChanged: (value) {
-                                    setState(() {
-                                      _value = int.parse(value);
-                                    });
-                                  },
-                                ),
+                          if (_showCustomDatePickers) ...[
+                            ListTile(
+                              title: Text(
+                                "Date de début: ${_startDate != null ? _startDate!.toLocal().toString().split(' ')[0] : 'Sélectionner'}",
+                                style: TextStyle(color: Color(0xFF285429)),
                               ),
-                            if (_showCustomDatePickers) ...[
-                              ListTile(
-                                title: Text(
-                                  "Date de début: ${_startDate != null ? _startDate!.toLocal().toIso8601String().split('T')[0] : 'Sélectionner'}",
-                                  style: TextStyle(color: Color(0xFF285429)),
-                                ),
-                                trailing: Icon(Icons.calendar_today, color: Color(0xFF285429)),
-                                onTap: () => _selectStartDate(context),
+                              trailing: Icon(Icons.calendar_today, color: Color(0xFF285429)),
+                              onTap: () => _selectStartDate(context),
+                            ),
+                            ListTile(
+                              title: Text(
+                                "Date de fin: ${_endDate != null ? _endDate!.toLocal().toString().split(' ')[0] : 'Sélectionner'}",
+                                style: TextStyle(color: Color(0xFF285429)),
                               ),
-                              ListTile(
-                                title: Text(
-                                  "Date de fin: ${_endDate != null ? _endDate!.toLocal().toIso8601String().split('T')[0] : 'Sélectionner'}",
-                                  style: TextStyle(color: Color(0xFF285429)),
-                                ),
-                                trailing: Icon(Icons.calendar_today, color: Color(0xFF285429)),
-                                onTap: () => _selectEndDate(context),
-                              ),
-                            ],
+                              trailing: Icon(Icons.calendar_today, color: Color(0xFF285429)),
+                              onTap: () => _selectEndDate(context),
+                            ),
                           ],
-                          SizedBox(height: 20),
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: _isEligibleForEstimation ? () {
-                                Navigator.pop(context);
-                                _estimateProduction();
-                              } : null,
-                              child: Text('Confirmer'),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF285429),
-                                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                                textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-                                foregroundColor: Colors.white,
-                              ),
+                        ],
+                        SizedBox(height: 20),
+                        Center(
+                          child: ElevatedButton(
+                            onPressed: _isEligibleForEstimation ? () {
+                              Navigator.pop(context);
+                              _estimateProduction();
+                            } : null,
+                            child: Text('Confirmer'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF285429),
+                              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                              textStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                              foregroundColor: Colors.white,
                             ),
                           ),
-                          if (!_isEligibleForEstimation)
-                            Center(
-                              child: Text(
-                                'Les poulets doivent avoir au moins 6 mois pour être éligibles à la ponte.',
-                                style: TextStyle(color: Colors.red, fontSize: 16),
-                              ),
+                        ),
+                        if (!_isEligibleForEstimation)
+                          Center(
+                            child: Text(
+                              'Les poulets doivent avoir au moins 6 mois pour être éligibles à la ponte.',
+                              style: TextStyle(color: Colors.red, fontSize: 16),
                             ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
   // Future<void> _estimateProduction() async {
   //   final Map<String, dynamic> requestData = {
   //     'timeFrame': _timeFrame,
