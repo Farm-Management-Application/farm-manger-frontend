@@ -1,6 +1,6 @@
 class ApiEndpoints {
-  static const String baseUrl = 'http://192.168.43.68:3000/api/farm';
-  // static const String baseUrl = 'https://farm-manager-backend.onrender.com/api/farm';
+  // static const String baseUrl = 'http://192.168.43.68:3000/api/farm';
+  static const String baseUrl = 'https://farm-manager-backend.onrender.com/api/farm';
 
   // Chickens
   static String createChickenGroup = '$baseUrl/chickens';
