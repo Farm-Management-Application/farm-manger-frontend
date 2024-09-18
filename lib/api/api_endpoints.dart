@@ -43,4 +43,8 @@ class ApiEndpoints {
   static String getAllIllnesses = '$baseUrl/illness';
   static String getIllnessById(String id) => '$baseUrl/illness/$id';
   static String deleteIllness(String id) => '$baseUrl/illness/$id';
+
+  static String getTotalLivestockCount = '$baseUrl/statistics/livestock-count';
+  static String getAverageSalary = '$baseUrl/statistics/average-salary';
+  static String getIllnessImpact = '$baseUrl/statistics/illness-impact';
 }

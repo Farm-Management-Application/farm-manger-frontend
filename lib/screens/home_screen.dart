@@ -94,9 +94,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             ListTile(
               leading: Icon(Icons.analytics),
-              title: Text('Estimation & Analytics'),
+              title: Text('Estimation et Analyse'),
               onTap: () {
-                Navigator.pushNamed(context, '/estimations');
+                Navigator.pushNamed(context, '/statistics');
               },
             ),
           ],

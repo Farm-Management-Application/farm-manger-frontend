@@ -12,6 +12,7 @@ import 'screens/illness/illness_list_screen.dart';
 import 'screens/illness/add_illness_screen.dart';
 import 'screens/illness/edit_illness_screen.dart';
 import 'screens/illness/illness_detail_screen.dart';
+import 'screens/StatisticsScreen.dart';
 import 'models/illness.dart';
 
 void main() {
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
           final illness = ModalRoute.of(context)!.settings.arguments as Illness;
           return IllnessDetailScreen(illness: illness);
         },
+        '/statistics': (context) => StatisticsScreen(),
       },
     );
   }
